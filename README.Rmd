@@ -1,0 +1,30 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# kumquat
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of kumquat is to be a smaller simpler implementation of LIME. This is purely for demonstration purposes, and is not ideal to be used in production settings.
+
+## Installation
+
+You can install the development version of kumquat like so:
+
+``` r
+pak::pak("janithwanni/kumquat")
+```
+
