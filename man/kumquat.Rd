@@ -7,7 +7,7 @@
 kumquat(
   model_bundle,
   data,
-  poi,
+  pois,
   perturbations = NULL,
   radius = 0.1,
   step = 0.01,
@@ -22,7 +22,9 @@ kumquat(
 
 \item{data}{Training data}
 
-\item{poi}{Point of interest (row number)}
+\item{pois}{Points of interest (row numbers)}
+
+\item{perturbations}{A data.frame of perturbations to be used to fit the local model}
 
 \item{radius}{Perturbation radius (default: 0.1)}
 

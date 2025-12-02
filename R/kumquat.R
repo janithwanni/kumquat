@@ -55,7 +55,10 @@ fit_local_model <- function(
   if (length(unique(perturbations$pred)) == 1) {
     result <- list(
       glm_predictions = perturbations$pred[1],
-      importances = setNames(rep(0.5, length(predictor_vars)), predictor_vars),
+      importances = stats::setNames(
+        rep(0.5, length(predictor_vars)),
+        predictor_vars
+      ),
       model = NULL
     )
     return(result)
@@ -75,11 +78,11 @@ fit_local_model <- function(
   )
 
   # Extract coefficients
-  coef_mat <- coef(fit, s = "lambda.min") |> as.matrix()
+  coef_mat <- stats::coef(fit, s = "lambda.min") |> as.matrix()
 
   # Generate predictions
   glm_preds <- ifelse(
-    predict(fit, newx = X, s = "lambda.min") < 0.5,
+    stats::predict(fit, newx = X, s = "lambda.min") < 0.5,
     class_names[1],
     class_names[2]
   )
@@ -103,7 +106,8 @@ fit_local_model <- function(
 #'
 #' @param model_bundle A trained model held in a bundle::bundle()
 #' @param data Training data
-#' @param poi Point of interest (row number)
+#' @param pois Points of interest (row numbers)
+#' @param perturbations A data.frame of perturbations to be used to fit the local model
 #' @param radius Perturbation radius (default: 0.1)
 #' @param step Perturbation step size (default: 0.01)
 #' @param predictor_vars Character vector of predictor variable names
@@ -116,7 +120,7 @@ fit_local_model <- function(
 kumquat <- function(
   model_bundle,
   data,
-  poi,
+  pois,
   perturbations = NULL,
   radius = 0.1,
   step = 0.01,
@@ -125,41 +129,48 @@ kumquat <- function(
   alpha = 1,
   class_names = c("A", "B")
 ) {
-  if (!is.null(perturbations)) {
-    pertubs <- perturbations
-  } else {
-    # Generate perturbations
-    pertubs <- generate_perturbations(
-      data,
-      poi,
-      radius,
-      step,
-      x_var = predictor_vars[1],
-      y_var = predictor_vars[2]
+  lapply(seq_along(pois), \(i) {
+    p <- pois[i]
+    if (!is.null(perturbations)) {
+      if (length(perturbations) != length(pois)) {
+        stop("Need perturbations for each point of interest")
+      }
+      pertubs <- perturbations[[i]]
+    } else {
+      # Generate perturbations
+      pertubs <- generate_perturbations(
+        data,
+        p,
+        radius,
+        step,
+        x_var = predictor_vars[1],
+        y_var = predictor_vars[2]
+      )
+    }
+
+    # Unbundle model
+    model <- bundle::unbundle(model_bundle)
+
+    # Get predictions
+    pertubs <- pertubs |>
+      dplyr::mutate(pred = stats::predict(model, pertubs))
+
+    # Fit local model
+    local_model <- fit_local_model(
+      pertubs,
+      predictor_vars,
+      nfolds,
+      alpha,
+      class_names
     )
-  }
 
-  # Unbundle model
-  model <- bundle::unbundle(model_bundle)
+    result <- list(
+      perturbations = pertubs,
+      local_model = local_model,
+      point_of_interest = p,
+      train_data = data
+    )
 
-  # Get predictions
-  pertubs <- pertubs |>
-    dplyr::mutate(pred = predict(model, pertubs))
-
-  # Fit local model
-  local_model <- fit_local_model(
-    pertubs,
-    predictor_vars,
-    nfolds,
-    alpha,
-    class_names
-  )
-
-  result <- list(
-    perturbations = pertubs,
-    local_model = local_model,
-    point_of_interest = data[poi, ]
-  )
-
-  return(result)
+    return(result)
+  })
 }
