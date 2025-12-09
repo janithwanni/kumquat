@@ -17,5 +17,6 @@ Imports:
     ggplot2,
     glmnet,
     glue,
+    logger,
     rlang,
     tidyr
