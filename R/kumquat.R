@@ -131,6 +131,7 @@ kumquat <- function(
 ) {
   lapply(seq_along(pois), \(i) {
     p <- pois[i]
+    logger::log_info("Picking kumquats for row: {p}")
     if (!is.null(perturbations)) {
       if (length(perturbations) != length(pois)) {
         stop("Need perturbations for each point of interest")
