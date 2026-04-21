@@ -20,6 +20,10 @@ knitr::opts_chunk$set(
 
 The goal of kumquat is to be a smaller simpler implementation of LIME. This is purely for demonstration purposes, and is not ideal to be used in production settings.
 
+Kumquat is super easy to use. First you get your data set up and your model set up. Then you decide the data points of interest and kumquat will give you a list of information for each point you selected. 
+
+Below we will go through a step-by-step guide on setting up kumquats to be used.
+
 ## Installation
 
 You can install the development version of kumquat like so:
@@ -28,48 +32,123 @@ You can install the development version of kumquat like so:
 pak::pak("janithwanni/kumquat")
 ```
 
+## Load package
+
+```{r}
+library(kumquat)
+```
+
+## Limitations
+
+- Currently `kumquat` only supports datasets of two numeric variables and one categorical variable.
+
+<!-- WARN:  Can kumquat handle multiple classes -->
+
 ## Usage
 
-Kumquat is super easy to use. First you get your data set up and your model set up. Then you decide the data points of interest and kumquat will give you a list of information for each point you selected.
+### Step 1: Load Data
 
-When setting up the model, kumquat expects a bundle object containing the model and its reference pointers.
+```{r}
+library(tidyverse)
+library(colorspace)
 
-```{r, eval=FALSE}
-library(kumquat)
+data(d_vertical)
+
+ggplot(d_vertical, aes(x = x, y = y, colour = class)) +
+  geom_point() +
+  scale_colour_discrete_divergingx(palette = "Zissou 1") +
+  theme_minimal() +
+  theme(aspect.ratio = 1)
+```
+
+### Step 2: Bundling the model
+
+When setting up the model, kumquat expects a `bundle` object containing the model and its reference pointers.
+
+```{r}
 library(randomForest)
-
-# Get data ready
-train_data <- readr::read_csv(here::here("train_data.csv"))
+library(bundle)
 
 # Get model ready
 rfmodel <- randomForest(
   class ~ x + y,
-  data = train_data)
+  data = d_vertical
 )
 
 # Bundle model up
 rfmodel_bundled <- bundle(rfmodel)
+```
 
+### Step 3: Decide on points of interest
+```{r}
 # Decide on points of interest
-pois <- c(9950, 9684, 9833, 9695)
+find_closest <- function(pt, data) {
+  dst <- data |>
+    mutate(dst = sqrt((x - pt$x)^2 + (y - pt$y)^2))
+  return(which.min(dst$dst))
+}
 
-# Run kumquat
-ks <- kumquat(
-  rfmodel_bundled,
-  train_data,
-  pois,
-  class_names = unique(train_data$class)
+pois <- c(
+  # Case 1: the point of interest is not near the boundary
+  find_closest(tibble(x=0, y=0), d_vertical),
+  # Case 2: the point is on the decision boundary
+  find_closest(tibble(x=0.3, y=0.5), d_vertical)
 )
 ```
 
-Once done each element of the list will contain a list with the following names
+```{r}
+ggplot(d_vertical, aes(x = x, y = y, colour = class)) +
+  geom_point() +
+  geom_point(data=d_vertical[pois, ], mapping=aes(x=x,y=y,fill=class), shape = 18, color = "black") +
+  scale_colour_discrete_divergingx(palette = "Zissou 1") +
+  theme_minimal() +
+  theme(aspect.ratio = 1)
+```
+
+
+#### Step 4: Build kumquat
+
+```{r}
+# Run kumquat
+ks <- kumquat(
+  rfmodel_bundled,
+  d_vertical,
+  pois,
+  class_names = unique(d_vertical$class)
+)
+```
+
+#### Step 5: Examine the outputs
+
+##### Case 1: The point is not near the decision boundary
+
+In this case, according to `ks[[1]]$local_model$importances` both `x` and `y` are equally important.
+
+```{r}
+# str(ks)
+ks[[1]]
+```
+
+##### Case 2: The point is near the decision boundary
+
+In this case, according to `ks[[2]]$local_model$importances`, `x` has an importance of `r ks[[2]]$local_model$importances["x"]` and `y` has an importance of `r ks[[2]]$local_model$importances["y"]`. Since the decision boundary was made using just the `x` variable we would expect the `x` variable to be more important in the model's decision making process.
+
+
+```{r}
+# str(ks)
+ks[[2]]
+```
+
+The output from `kumquat` will be a list containing the following elements.
 
 1. perturbations: A data.frame of perturbations used to fit the local model
-2. local_model: Details of the glmnet model fit
+2. local_model: Details of the glmnet model fit. This is also a list containing the following elements. In the case where the point of interest is not near the model's decision boundary, the `model` component will be NULL and the importances will be distributted equally.
+
   1. glm_predictions
-  2. importances 
-  3. coef_mat
-  4. model 
+  2. importances: The importances of each feature 
+  3. coef_mat: The coefficients
+  4. model: the glm_net model object
+
 3. point_of_interest
 4. train_data
 
