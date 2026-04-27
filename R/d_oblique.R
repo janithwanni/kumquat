@@ -1,11 +1,10 @@
-#' Vertical Boundary Example Dataset
+#' Oblique Boundary Example Dataset
 #'
-#' Simple two-dimensional dataset with a vertical decision boundary.
+#' Simple two-dimensional dataset with an oblique decision boundary.
 #'
 #' @description
 #' A demonstration dataset containing two numeric predictors and a binary
-#' class variable. The class boundary is defined by a vertical split at
-#' x = 0.3.
+#' class variable. The class boundary is defined based on the inequality: y > 0.1 + 1.4 * x
 #'
 #' @format A tibble with 5,000 rows and 3 variables:
 #' \describe{
@@ -14,10 +13,9 @@
 #'   \item{class}{Binary categorical variable with two levels: "A" and "B"}
 #' }
 #'
-#' @usage data(d_vertical)
+#' @usage data(d_oblique)
 #'
 #' @docType data
-#' @name d_vertical
+#' @name d_oblique
 #' @keywords datasets
-"d_vertical"
-
+"d_oblique"
