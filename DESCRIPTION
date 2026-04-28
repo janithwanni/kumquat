@@ -1,15 +1,18 @@
 Package: kumquat
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.1
+Title: A smaller version of LIME 
+Version: 0.0.1.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Janith", "Wanniarachchi", , "janithcwanni@gmail.com", role = c("aut", "cre"))
+Description: The existing implementation LIME can be quite limiting in understanding the underlying components that make LIME work. kumquat is a simpler implementation of LIME that is easier to understand and is more transparent on the pieces that come together to make LIME work.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
-    testthat (>= 3.0.0)
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tidyverse
 Config/testthat/edition: 3
 Imports: 
     bundle,
@@ -21,5 +24,7 @@ Imports:
     rlang,
     tidyr
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 LazyData: true
+VignetteBuilder: knitr
+URL: https://janithwanni.github.io/kumquat/
