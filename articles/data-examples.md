@@ -1,4 +1,4 @@
-# data-examples
+# Simple unit tests with in built datasets
 
 ``` r
 library(kumquat)
@@ -130,12 +130,12 @@ ks <- kumquat(
   obs,
   class_names = unique(d_vertical$class)
 )
-#> INFO [2026-04-28 02:24:52] Picking kumquats for row: 3470
+#> INFO [2026-04-28 02:50:53] Picking kumquats for row: 3470
 ```
 
 ``` r
 # we expect the absolute importance of x to be greater for y
-abs(ks[[1]]$local_model$importances["x"]) > abs(ks[[1]]$local_model$importances["y"])
-#>    x 
-#> TRUE
+pinch_importance(ks)
+#>           x y
+#> 1 -1004.045 0
 ```

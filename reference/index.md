@@ -16,5 +16,7 @@
   : Generate Perturbations Around a Point of Interest
 - [`kumquat()`](https://janithwanni.github.io/kumquat/reference/kumquat.md)
   : Complete Local Interpretation Pipeline
+- [`pinch_importance()`](https://janithwanni.github.io/kumquat/reference/pinch_importance.md)
+  : Extract and Combine Feature Importances from Kumquat Objects
 - [`plot_interest()`](https://janithwanni.github.io/kumquat/reference/plot_interest.md)
   : Plot point of interest with perturbations and predictions

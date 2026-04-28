@@ -2,4 +2,5 @@
 
 ### All vignettes
 
-- [data-examples](https://janithwanni.github.io/kumquat/articles/data-examples.md):
+- [Simple unit tests with in built
+  datasets](https://janithwanni.github.io/kumquat/articles/data-examples.md):
