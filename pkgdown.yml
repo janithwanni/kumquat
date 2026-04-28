@@ -1,0 +1,9 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  data-examples: data-examples.html
+last_built: 2026-04-28T02:24Z
+urls:
+  reference: https://janithwanni.github.io/kumquat/reference
+  article: https://janithwanni.github.io/kumquat/articles
