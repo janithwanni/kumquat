@@ -3,6 +3,7 @@
 export(fit_local_model)
 export(generate_perturbations)
 export(kumquat)
+export(pinch_importance)
 export(plot_interest)
 import(dplyr)
 import(glmnet)

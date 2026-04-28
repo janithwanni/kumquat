@@ -1,5 +1,5 @@
 ---
-title: "data-examples"
+title: "Simple unit tests with in built datasets"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{data-examples}
@@ -125,6 +125,6 @@ ks <- kumquat(
 
 ```{r}
 # we expect the absolute importance of x to be greater for y
-abs(ks[[1]]$local_model$importances["x"]) > abs(ks[[1]]$local_model$importances["y"])
+pinch_importance(ks)
 ```
 

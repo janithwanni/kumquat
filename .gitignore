@@ -4,3 +4,5 @@ renv/
 .positai
 inst/doc
 docs
+/doc/
+/Meta/
