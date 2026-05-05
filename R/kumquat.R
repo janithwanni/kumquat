@@ -51,6 +51,10 @@ fit_local_model <- function(
   alpha = 1,
   class_names = c("A", "B")
 ) {
+  if (is.factor(class_names)) {
+    class_names <- levels(class_names)
+  }
+
   # Check if all predictions are the same
   if (length(unique(perturbations$pred)) == 1) {
     result <- list(
@@ -82,7 +86,7 @@ fit_local_model <- function(
 
   # Generate predictions
   glm_preds <- ifelse(
-    stats::predict(fit, newx = X, s = "lambda.min") < 0.5,
+    as.vector(stats::predict(fit, newx = X, s = "lambda.min")) < 0.5,
     class_names[1],
     class_names[2]
   )
@@ -114,6 +118,7 @@ fit_local_model <- function(
 #' @param nfolds Number of CV folds (default: 50)
 #' @param alpha Elastic net parameter (default: 1)
 #' @param class_names Character vector of class names
+#' @param predict_func A function that takes in two arguments: model and data and returns a vector of factors
 #'
 #' @return A list containing perturbations, predictions, and local model results
 #' @export
@@ -127,7 +132,8 @@ kumquat <- function(
   predictor_vars = c("x", "y"),
   nfolds = 50,
   alpha = 1,
-  class_names = c("A", "B")
+  class_names = c("A", "B"),
+  predict_func = stats::predict
 ) {
   lapply(seq_along(pois), \(i) {
     p <- pois[i]
@@ -154,7 +160,9 @@ kumquat <- function(
 
     # Get predictions
     pertubs <- pertubs |>
-      dplyr::mutate(pred = stats::predict(model, pertubs))
+      dplyr::mutate(pred = predict_func(model, pertubs))
+    data <- data |>
+      dplyr::mutate(pred = predict_func(model, data))
 
     # Fit local model
     local_model <- fit_local_model(

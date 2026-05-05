@@ -35,21 +35,17 @@ plot_interest <- function(kquat) {
       ggplot2::geom_point(alpha = 0.5, shape = 17) +
       ggplot2::geom_point(
         data = k$train_data,
-        ggplot2::aes(color = class),
+        ggplot2::aes(color = pred),
         alpha = 0.1
       ) +
       ggplot2::geom_point(
         data = dplyr::slice(k$train_data, k$poi),
         mapping = aes(x = .data$x, y = .data$y),
         color = "black",
+        shape = 19,
         size = 2,
         alpha = 1,
         inherit.aes = FALSE
-      ) +
-      ggplot2::labs(
-        subtitle = glue::glue(
-          "x = {round(k$local_model$importances[1], 2)}, y = {round(k$local_model$importances[2], 2)}"
-        )
       ) +
       ggplot2::theme_minimal()
   })

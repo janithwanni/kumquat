@@ -14,7 +14,8 @@ kumquat(
   predictor_vars = c("x", "y"),
   nfolds = 50,
   alpha = 1,
-  class_names = c("A", "B")
+  class_names = c("A", "B"),
+  predict_func = stats::predict
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ kumquat(
 \item{alpha}{Elastic net parameter (default: 1)}
 
 \item{class_names}{Character vector of class names}
+
+\item{predict_func}{A function that takes in two arguments: model and data and returns a vector of factors}
 }
 \value{
 A list containing perturbations, predictions, and local model results
