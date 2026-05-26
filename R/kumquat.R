@@ -4,8 +4,7 @@
 #' @param poi Row number of point of interest
 #' @param radius Perturbation radius (default: 0.1)
 #' @param step Step size for perturbations (default: 0.01)
-#' @param x_var Name of x variable (default: "x")
-#' @param y_var Name of y variable (default: "y")
+#' @param predictors Character vector of predictor variable names
 #'
 #' @return A data frame of perturbed points
 #' @export
@@ -15,20 +14,36 @@ generate_perturbations <- function(
   poi,
   radius = 0.1,
   step = 0.01,
-  x_var = "x",
-  y_var = "y"
+  predictors = names(data)
 ) {
-  local_obs <- data[poi, ]
+  if (!is.data.frame(data)) {
+    stop("data must be a data frame")
+  }
 
-  perturb_params <- list(
-    seq(local_obs[[x_var]] - radius, local_obs[[x_var]] + radius, by = step),
-    seq(local_obs[[y_var]] - radius, local_obs[[y_var]] + radius, by = step)
+  if (length(poi) != 1 || poi < 1 || poi > nrow(data)) {
+    stop("poi must be a valid row index")
+  }
+
+  if (!all(predictors %in% names(data))) {
+    stop("All predictors must exist in data")
+  }
+
+  local_obs <- data[poi, , drop = FALSE]
+
+  perturb_params <- lapply(
+    predictors,
+    function(var) {
+      seq(
+        local_obs[[var]] - radius,
+        local_obs[[var]] + radius,
+        by = step
+      )
+    }
   )
-  names(perturb_params) <- c(x_var, y_var)
 
-  pertubs <- do.call(tidyr::expand_grid, perturb_params)
+  names(perturb_params) <- predictors
 
-  return(pertubs)
+  do.call(tidyr::expand_grid, perturb_params)
 }
 
 
@@ -150,8 +165,7 @@ kumquat <- function(
         p,
         radius,
         step,
-        x_var = predictor_vars[1],
-        y_var = predictor_vars[2]
+        predictors = predictor_vars
       )
     }
 

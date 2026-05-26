@@ -4,11 +4,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^\.positai$
-^\.claude$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
 ^doc$
 ^Meta$
+^.*\.sh$
+^data-raw$
+^.*\.json$

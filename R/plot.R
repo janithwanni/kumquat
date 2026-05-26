@@ -35,7 +35,7 @@ plot_interest <- function(kquat) {
       ggplot2::geom_point(alpha = 0.5, shape = 17) +
       ggplot2::geom_point(
         data = k$train_data,
-        ggplot2::aes(color = pred),
+        ggplot2::aes(color = .data$pred),
         alpha = 0.1
       ) +
       ggplot2::geom_point(

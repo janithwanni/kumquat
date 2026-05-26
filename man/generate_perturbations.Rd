@@ -9,8 +9,7 @@ generate_perturbations(
   poi,
   radius = 0.1,
   step = 0.01,
-  x_var = "x",
-  y_var = "y"
+  predictors = names(data)
 )
 }
 \arguments{
@@ -22,9 +21,7 @@ generate_perturbations(
 
 \item{step}{Step size for perturbations (default: 0.01)}
 
-\item{x_var}{Name of x variable (default: "x")}
-
-\item{y_var}{Name of y variable (default: "y")}
+\item{predictors}{Character vector of predictor variable names}
 }
 \value{
 A data frame of perturbed points
