@@ -6,13 +6,13 @@
 
 ## Citation
 
-Wanniarachchi J (2026). *kumquat: A smaller version of LIME*. R package
-version 0.0.1.9000, <https://janithwanni.github.io/kumquat/>.
+Wanniarachchi J (2026). *kumquat: A Smaller Version of LIME*. R package
+version 1.0.0, <https://janithwanni.github.io/kumquat/>.
 
     @Manual{,
-      title = {kumquat: A smaller version of LIME},
+      title = {kumquat: A Smaller Version of LIME},
       author = {Janith Wanniarachchi},
       year = {2026},
-      note = {R package version 0.0.1.9000},
+      note = {R package version 1.0.0},
       url = {https://janithwanni.github.io/kumquat/},
     }

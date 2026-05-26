@@ -16,12 +16,14 @@ be used.
 You can install the development version of kumquat like so:
 
 ``` r
+
 pak::pak("janithwanni/kumquat")
 ```
 
 ## Load package
 
 ``` r
+
 library(kumquat)
 ```
 
@@ -35,6 +37,7 @@ library(kumquat)
 ### Step 1: Load Data
 
 ``` r
+
 library(tidyverse)
 #> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 #> ✔ dplyr     1.2.0     ✔ readr     2.2.0
@@ -65,6 +68,7 @@ When setting up the model, kumquat expects a `bundle` object containing
 the model and its reference pointers.
 
 ``` r
+
 library(randomForest)
 #> randomForest 4.7-1.2
 #> Type rfNews() to see new features/changes/bug fixes.
@@ -91,6 +95,7 @@ rfmodel_bundled <- bundle(rfmodel)
 ### Step 3: Decide on points of interest
 
 ``` r
+
 # Decide on points of interest
 find_closest <- function(pt, data) {
   dst <- data |>
@@ -107,6 +112,7 @@ pois <- c(
 ```
 
 ``` r
+
 ggplot(d_vertical, aes(x = x, y = y, colour = class)) +
   geom_point() +
   geom_point(data=d_vertical[pois, ], mapping=aes(x=x,y=y,fill=class), shape = 18, color = "black") +
@@ -120,6 +126,7 @@ ggplot(d_vertical, aes(x = x, y = y, colour = class)) +
 #### Step 4: Build kumquat
 
 ``` r
+
 # Run kumquat
 ks <- kumquat(
   rfmodel_bundled,
@@ -137,6 +144,7 @@ In this case, according to `ks[[1]]$local_model$importances` both `x`
 and `y` are equally important.
 
 ``` r
+
 # str(ks)
 ks[[1]]
 #> $perturbations
@@ -198,6 +206,7 @@ the `x` variable to be more important in the model’s decision making
 process.
 
 ``` r
+
 # str(ks)
 ks[[2]]
 #> $perturbations

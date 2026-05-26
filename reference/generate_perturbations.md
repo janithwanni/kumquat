@@ -10,8 +10,7 @@ generate_perturbations(
   poi,
   radius = 0.1,
   step = 0.01,
-  x_var = "x",
-  y_var = "y"
+  predictors = names(data)
 )
 ```
 
@@ -33,13 +32,9 @@ generate_perturbations(
 
   Step size for perturbations (default: 0.01)
 
-- x_var:
+- predictors:
 
-  Name of x variable (default: "x")
-
-- y_var:
-
-  Name of y variable (default: "y")
+  Character vector of predictor variable names
 
 ## Value
 

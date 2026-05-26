@@ -15,7 +15,8 @@ kumquat(
   predictor_vars = c("x", "y"),
   nfolds = 50,
   alpha = 1,
-  class_names = c("A", "B")
+  class_names = c("A", "B"),
+  predict_func = stats::predict
 )
 ```
 
@@ -60,6 +61,11 @@ kumquat(
 - class_names:
 
   Character vector of class names
+
+- predict_func:
+
+  A function that takes in two arguments: model and data and returns a
+  vector of factors
 
 ## Value
 
