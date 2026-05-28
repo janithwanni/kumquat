@@ -15,4 +15,10 @@ Duration: 29.4s
 
 Status: OK
 
+> rhub::rhub_check()
+
+Checks for linux, mac, windows all passed, details at:
+
+https://github.com/janithwanni/kumquat/actions/runs/26549565403
+
 
