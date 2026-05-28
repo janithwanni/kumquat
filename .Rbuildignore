@@ -13,3 +13,5 @@
 ^.*\.sh$
 ^data-raw$
 ^.*\.json$
+^\.positai$
+^\.claude$
