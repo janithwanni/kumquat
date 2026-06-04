@@ -38,4 +38,25 @@ generate_perturbations(
 
 ## Value
 
-A data frame of perturbed points
+A data frame of perturbed points. The output contains the following
+properties:
+
+- Columns are predictors
+
+- Number of rows are going to be dependent on `radius` and `step`
+
+## Examples
+
+``` r
+data <- data.frame(
+  x = 1,
+  y = 2
+)
+result <- generate_perturbations(
+  data,
+  poi = 1,
+  radius = 0.1,
+  step = 0.1,
+  predictors = c("x", "y")
+ )
+```

@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Janith Wanniarachchi**. Author, maintainer.
+- **Janith Wanniarachchi**. Author, maintainer, copyright holder.
 
 ## Citation
 

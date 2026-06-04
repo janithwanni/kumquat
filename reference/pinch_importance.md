@@ -23,8 +23,19 @@ extracted from one kumquat object. Column names represent feature names.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-pinch_importance(make_kumquats(model_bundle, dataset, pois, class_names))
-} # }
-
+data(d_vertical)
+rfmodel <- randomForest::randomForest(
+ class ~ x + y,
+ data = d_vertical
+)
+# Bundle model up
+rfmodel_bundled <- bundle::bundle(rfmodel)
+ks <- kumquat(
+ rfmodel_bundled,
+ d_vertical,
+  1,
+  class_names = unique(d_vertical$class)
+)
+#> INFO [2026-06-04 02:48:01] Picking kumquats for row: 1
+imps <- pinch_importance(ks)
 ```

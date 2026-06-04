@@ -30,3 +30,23 @@ plot_interest(kquat)
 ## Value
 
 A `ggplot` object
+
+## Examples
+
+``` r
+data(d_vertical)
+rfmodel <- randomForest::randomForest(
+ class ~ x + y,
+ data = d_vertical
+)
+# Bundle model up
+rfmodel_bundled <- bundle::bundle(rfmodel)
+ks <- kumquat(
+ rfmodel_bundled,
+ d_vertical,
+  1,
+  class_names = unique(d_vertical$class)
+)
+#> INFO [2026-06-04 02:48:02] Picking kumquats for row: 1
+plot_obj <- plot_interest(ks)
+```
