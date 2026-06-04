@@ -6,14 +6,20 @@
 
 > devtools::check()
 
-── R CMD check results ────────────────────────────── kumquat 1.0.0 ────
-Duration: 29.4s
+── R CMD check results ────────────────────── kumquat 1.0.0 ────
+Duration: 1m 11.8s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
-> R CMD CHECK
+> R CMD CHECK --as-cran
 
-Status: OK
+Status: 1 NOTE
+
+The NOTE is to show the maintainer email and name.
+* checking CRAN incoming feasibility ... [3s/12s] NOTE
+Maintainer: ‘Janith Wanniarachchi <janithcwanni@gmail.com>’
+
+New submission
 
 > rhub::rhub_check()
 

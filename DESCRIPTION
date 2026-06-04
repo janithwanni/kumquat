@@ -30,5 +30,6 @@ Depends:
     R (>= 4.1.0)
 LazyData: true
 VignetteBuilder: knitr
-URL: https://janithwanni.github.io/kumquat/
+URL: https://janithwanni.github.io/kumquat/, https://github.com/janithwanni/kumquat
 Config/roxygen2/version: 8.0.0
+BugReports: https://github.com/janithwanni/kumquat/issues
