@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(kumquat)
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 if(!requireNamespace("tidyverse")) {
   install.packages("tidyverse")
 }
