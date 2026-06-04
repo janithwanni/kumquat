@@ -58,7 +58,7 @@ library(patchwork)
     #> 
     #>     margin
 
-    #> INFO [2026-06-04 01:28:44] Picking kumquats for row: 3090
+    #> INFO [2026-06-04 01:31:30] Picking kumquats for row: 3090
 
 ``` r
 
