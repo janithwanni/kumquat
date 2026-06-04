@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{data-examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{tidyverse, RColorBrewer, colorspace, patchwork, randomForest}
 ---
 
 ```{r, include = FALSE}
