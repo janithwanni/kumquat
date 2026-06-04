@@ -16,10 +16,26 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(kumquat)
-
+if(!requireNamespace("tidyverse")) {
+  install.packages("tidyverse")
+}
+if(!requireNamespace("RColorBrewer")) {
+  install.packages("RColorBrewer")
+}
+if(!requireNamespace("colorspace")) {
+  install.packages("colorspace")
+}
+if(!requireNamespace("patchwork")) {
+  install.packages("patchwork")
+}
+if(!requireNamespace("randomForest")) {
+  install.packages("randomForest")
+}
 library(tidyverse)
 library(RColorBrewer)
 library(colorspace)
+library(patchwork)
+library(randomForest)
 ```
 
 There are four sample datasets in the package, with varying complexities in the decision boundary. 
@@ -90,7 +106,6 @@ d_multitwo_plot <- ggplot(d_multitwo, aes(x = x, y = y, colour = class)) +
 ```
 
 ```{r}
-library(patchwork)
 
 (d_vert_plot + d_obl_plot) / (d_multi_plot + d_multitwo_plot)
 ```
@@ -100,8 +115,6 @@ library(patchwork)
 ### Models
 
 ```{r, echo=FALSE}
-library(randomForest)
-
 rf_multitwo <- randomForest(class ~ ., data = d_multitwo)
 rf_multitwo_bundle <- bundle::bundle(rf_multitwo)
 ```
