@@ -1,3 +1,5 @@
+# kumquat 1.1.0
+
 # kumquat 1.0.0
 
 * Initial CRAN submission.
