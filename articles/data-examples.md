@@ -3,6 +3,7 @@
 ``` r
 
 library(kumquat)
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 if(!requireNamespace("tidyverse")) {
   install.packages("tidyverse")
 }
@@ -78,7 +79,7 @@ along with their decision boundary.
 
 ### Models
 
-    #> INFO [2026-06-04 03:13:27] Picking kumquats for row: 3090
+    #> INFO [2026-06-04 03:18:59] Picking kumquats for row: 3090
 
 ``` r
 
