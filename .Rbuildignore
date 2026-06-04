@@ -17,3 +17,4 @@
 ^\.claude$
 ^cran-comments\.md$
 ^.*\.Rcheck$
+^CRAN-SUBMISSION$
