@@ -3,20 +3,52 @@
 ``` r
 
 library(kumquat)
-
+if(!requireNamespace("tidyverse")) {
+  install.packages("tidyverse")
+}
+#> Loading required namespace: tidyverse
+if(!requireNamespace("RColorBrewer")) {
+  install.packages("RColorBrewer")
+}
+if(!requireNamespace("colorspace")) {
+  install.packages("colorspace")
+}
+#> Loading required namespace: colorspace
+if(!requireNamespace("patchwork")) {
+  install.packages("patchwork")
+}
+#> Loading required namespace: patchwork
+if(!requireNamespace("randomForest")) {
+  install.packages("randomForest")
+}
+#> Loading required namespace: randomForest
 library(tidyverse)
 #> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 #> ✔ dplyr     1.2.1     ✔ readr     2.2.0
 #> ✔ forcats   1.0.1     ✔ stringr   1.6.0
 #> ✔ ggplot2   4.0.3     ✔ tibble    3.3.1
 #> ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
-#> ✔ purrr     1.2.2     
+#> ✔ purrr     1.2.2
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 #> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 library(RColorBrewer)
 library(colorspace)
+library(patchwork)
+library(randomForest)
+#> randomForest 4.7-1.2
+#> Type rfNews() to see new features/changes/bug fixes.
+#> 
+#> Attaching package: 'randomForest'
+#> 
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     combine
+#> 
+#> The following object is masked from 'package:ggplot2':
+#> 
+#>     margin
 ```
 
 There are four sample datasets in the package, with varying complexities
@@ -36,7 +68,6 @@ along with their decision boundary.
 
 ``` r
 
-library(patchwork)
 
 (d_vert_plot + d_obl_plot) / (d_multi_plot + d_multitwo_plot)
 ```
@@ -47,18 +78,7 @@ library(patchwork)
 
 ### Models
 
-    #> randomForest 4.7-1.2
-    #> Type rfNews() to see new features/changes/bug fixes.
-    #> 
-    #> Attaching package: 'randomForest'
-    #> The following object is masked from 'package:dplyr':
-    #> 
-    #>     combine
-    #> The following object is masked from 'package:ggplot2':
-    #> 
-    #>     margin
-
-    #> INFO [2026-06-04 02:48:10] Picking kumquats for row: 3090
+    #> INFO [2026-06-04 03:13:27] Picking kumquats for row: 3090
 
 ``` r
 
