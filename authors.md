@@ -6,6 +6,9 @@
 
 ## Citation
 
+Source:
+[`DESCRIPTION`](https://github.com/janithwanni/kumquat/blob/main/DESCRIPTION)
+
 Wanniarachchi J (2026). *kumquat: A Smaller Version of LIME*. R package
 version 1.0.0, <https://janithwanni.github.io/kumquat/>.
 
