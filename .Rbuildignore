@@ -16,3 +16,4 @@
 ^\.positai$
 ^\.claude$
 ^cran-comments\.md$
+^.*\.Rcheck$
