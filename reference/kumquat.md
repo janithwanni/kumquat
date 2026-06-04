@@ -87,5 +87,5 @@ ks <- kumquat(
   1,
   class_names = unique(d_vertical$class)
 )
-#> INFO [2026-06-04 03:53:22] Picking kumquats for row: 1
+#> INFO [2026-06-04 03:59:07] Picking kumquats for row: 1
 ```
