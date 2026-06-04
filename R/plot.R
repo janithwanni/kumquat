@@ -21,6 +21,21 @@
 #' @importFrom dplyr mutate slice
 #' @importFrom glue glue
 #' @importFrom rlang .data
+#' @examplesIf rlang::is_installed(c("randomForest", "bundle"))
+#' data(d_vertical)
+#' rfmodel <- randomForest::randomForest(
+#'  class ~ x + y,
+#'  data = d_vertical
+#' )
+#' # Bundle model up
+#' rfmodel_bundled <- bundle::bundle(rfmodel)
+#' ks <- kumquat(
+#'  rfmodel_bundled,
+#'  d_vertical,
+#'   1,
+#'   class_names = unique(d_vertical$class)
+#' )
+#' plot_obj <- plot_interest(ks)
 plot_interest <- function(kquat) {
   lapply(kquat, \(k) {
     perturb_df <- dplyr::mutate(

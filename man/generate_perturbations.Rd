@@ -24,8 +24,25 @@ generate_perturbations(
 \item{predictors}{Character vector of predictor variable names}
 }
 \value{
-A data frame of perturbed points
+A data frame of perturbed points. The output contains the following properties:
+\itemize{
+\item Columns are predictors
+\item Number of rows are going to be dependent on \code{radius} and \code{step}
+}
 }
 \description{
 Generate Perturbations Around a Point of Interest
+}
+\examples{
+data <- data.frame(
+  x = 1,
+  y = 2
+)
+result <- generate_perturbations(
+  data,
+  poi = 1,
+  radius = 0.1,
+  step = 0.1,
+  predictors = c("x", "y")
+ )
 }

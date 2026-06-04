@@ -25,3 +25,21 @@ local model, overlaying the training data and highlighting a specific
 point of interest (poi). The plot subtitle shows the importances of
 the first two features.
 }
+\examples{
+\dontshow{if (rlang::is_installed(c("randomForest", "bundle"))) withAutoprint(\{ # examplesIf}
+data(d_vertical)
+rfmodel <- randomForest::randomForest(
+ class ~ x + y,
+ data = d_vertical
+)
+# Bundle model up
+rfmodel_bundled <- bundle::bundle(rfmodel)
+ks <- kumquat(
+ rfmodel_bundled,
+ d_vertical,
+  1,
+  class_names = unique(d_vertical$class)
+)
+plot_obj <- plot_interest(ks)
+\dontshow{\}) # examplesIf}
+}

@@ -19,9 +19,20 @@ feature names.
 kumquats and combines them into a single data frame.
 }
 \examples{
-\dontrun{
-pinch_importance(make_kumquats(model_bundle, dataset, pois, class_names))
-}
-
-
+\dontshow{if (rlang::is_installed(c("randomForest", "bundle"))) withAutoprint(\{ # examplesIf}
+data(d_vertical)
+rfmodel <- randomForest::randomForest(
+ class ~ x + y,
+ data = d_vertical
+)
+# Bundle model up
+rfmodel_bundled <- bundle::bundle(rfmodel)
+ks <- kumquat(
+ rfmodel_bundled,
+ d_vertical,
+  1,
+  class_names = unique(d_vertical$class)
+)
+imps <- pinch_importance(ks)
+\dontshow{\}) # examplesIf}
 }

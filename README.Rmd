@@ -32,6 +32,12 @@ You can install the development version of kumquat like so:
 pak::pak("janithwanni/kumquat")
 ```
 
+You can install the CRAN release of kumquat by running:
+
+```{r, eval=FALSE}
+install.packages("kumquat")
+```
+
 ## Load package
 
 ```{r}

@@ -29,3 +29,15 @@ A list containing glm_predictions, importances, and the fitted model
 \description{
 Fit Local Linear Model and Compute Feature Importance
 }
+\examples{
+ perturbations <- data.frame(
+   x1 = c(1, 2, 3),
+   x2 = c(4, 5, 6),
+   pred = c("A", "A", "A")
+ )
+
+ result <- fit_local_model(
+   perturbations,
+   predictor_vars = c("x1", "x2")
+ )
+}

@@ -10,12 +10,21 @@
 #'   feature names.
 #'
 #'
-#' @examples
-#' \dontrun{
-#' pinch_importance(make_kumquats(model_bundle, dataset, pois, class_names))
-#' }
-#'
-#'
+#' @examplesIf rlang::is_installed(c("randomForest", "bundle"))
+#' data(d_vertical)
+#' rfmodel <- randomForest::randomForest(
+#'  class ~ x + y,
+#'  data = d_vertical
+#' )
+#' # Bundle model up
+#' rfmodel_bundled <- bundle::bundle(rfmodel)
+#' ks <- kumquat(
+#'  rfmodel_bundled,
+#'  d_vertical,
+#'   1,
+#'   class_names = unique(d_vertical$class)
+#' )
+#' imps <- pinch_importance(ks)
 #' @export
 pinch_importance <- function(kumquats) {
   lapply(kumquats, \(x) {

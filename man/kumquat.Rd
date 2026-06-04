@@ -47,3 +47,20 @@ A list containing perturbations, predictions, and local model results
 \description{
 Complete Local Interpretation Pipeline
 }
+\examples{
+\dontshow{if (rlang::is_installed(c("randomForest", "bundle"))) withAutoprint(\{ # examplesIf}
+data(d_vertical)
+rfmodel <- randomForest::randomForest(
+ class ~ x + y,
+ data = d_vertical
+)
+# Bundle model up
+rfmodel_bundled <- bundle::bundle(rfmodel)
+ks <- kumquat(
+ rfmodel_bundled,
+ d_vertical,
+  1,
+  class_names = unique(d_vertical$class)
+)
+\dontshow{\}) # examplesIf}
+}

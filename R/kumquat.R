@@ -6,8 +6,23 @@
 #' @param step Step size for perturbations (default: 0.01)
 #' @param predictors Character vector of predictor variable names
 #'
-#' @return A data frame of perturbed points
+#' @return A data frame of perturbed points. The output contains the following properties:
+#' * Columns are predictors
+#' * Number of rows are going to be dependent on `radius` and `step`
+#'
 #' @export
+#' @examples
+#' data <- data.frame(
+#'   x = 1,
+#'   y = 2
+#' )
+#' result <- generate_perturbations(
+#'   data,
+#'   poi = 1,
+#'   radius = 0.1,
+#'   step = 0.1,
+#'   predictors = c("x", "y")
+#'  )
 #' @import tidyr
 generate_perturbations <- function(
   data,
@@ -57,6 +72,17 @@ generate_perturbations <- function(
 #'
 #' @return A list containing glm_predictions, importances, and the fitted model
 #' @export
+#' @examples
+#'  perturbations <- data.frame(
+#'    x1 = c(1, 2, 3),
+#'    x2 = c(4, 5, 6),
+#'    pred = c("A", "A", "A")
+#'  )
+#'
+#'  result <- fit_local_model(
+#'    perturbations,
+#'    predictor_vars = c("x1", "x2")
+#'  )
 #' @import glmnet
 #' @import dplyr
 fit_local_model <- function(
@@ -136,6 +162,21 @@ fit_local_model <- function(
 #' @param predict_func A function that takes in two arguments: model and data and returns a vector of factors
 #'
 #' @return A list containing perturbations, predictions, and local model results
+#' @examplesIf rlang::is_installed(c("randomForest", "bundle"))
+#' data(d_vertical)
+#' rfmodel <- randomForest::randomForest(
+#'  class ~ x + y,
+#'  data = d_vertical
+#' )
+#' # Bundle model up
+#' rfmodel_bundled <- bundle::bundle(rfmodel)
+#' ks <- kumquat(
+#'  rfmodel_bundled,
+#'  d_vertical,
+#'   1,
+#'   class_names = unique(d_vertical$class)
+#' )
+#'
 #' @export
 kumquat <- function(
   model_bundle,
