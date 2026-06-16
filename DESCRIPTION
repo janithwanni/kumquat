@@ -3,7 +3,7 @@ Title: A Smaller Version of LIME
 Version: 1.1.0
 Authors@R: 
     person("Janith", "Wanniarachchi", , "janithcwanni@gmail.com", role = c("aut", "cre", "cph"))
-Description: The existing implementation LIME can be quite limiting in understanding the underlying components that make LIME work. kumquat is a simpler implementation of LIME that is easier to understand and is more transparent on the pieces that come together to make LIME work.
+Description: The existing implementation of 'lime' can be quite limiting in understanding the underlying components that make Local Local interpretable model-agnostic explanations (LIME) work. 'kumquat' is a simpler implementation of 'lime' that is easier to understand and is more transparent on the pieces that come together to make LIME work. For more details on LIME, see Ribeiro, Singh, and Guestrin (2016) <doi:10.1145/2939672.2939778>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
