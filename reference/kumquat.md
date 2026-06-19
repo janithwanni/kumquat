@@ -32,11 +32,12 @@ kumquat(
 
 - pois:
 
-  Points of interest (row numbers)
+  Points of interest (data rows)
 
 - perturbations:
 
-  A data.frame of perturbations to be used to fit the local model
+  A list of data.frames of perturbations to be used to fit the local
+  model
 
 - radius:
 
@@ -84,8 +85,8 @@ rfmodel_bundled <- bundle::bundle(rfmodel)
 ks <- kumquat(
  rfmodel_bundled,
  d_vertical,
-  1,
+  d_vertical[1,],
   class_names = unique(d_vertical$class)
 )
-#> INFO [2026-06-16 04:24:07] Picking kumquats for row: 1
+#> INFO [2026-06-19 02:26:51] Picking kumquats for row: 1
 ```

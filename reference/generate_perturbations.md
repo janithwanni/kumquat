@@ -10,7 +10,7 @@ generate_perturbations(
   poi,
   radius = 0.1,
   step = 0.01,
-  predictors = names(data)
+  predictors = names(poi)
 )
 ```
 
@@ -22,7 +22,7 @@ generate_perturbations(
 
 - poi:
 
-  Row number of point of interest
+  a single row data.frame containing the point of interest
 
 - radius:
 
@@ -54,7 +54,7 @@ data <- data.frame(
 )
 result <- generate_perturbations(
   data,
-  poi = 1,
+  poi = data[1,],
   radius = 0.1,
   step = 0.1,
   predictors = c("x", "y")

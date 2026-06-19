@@ -79,7 +79,7 @@ along with their decision boundary.
 
 ### Models
 
-    #> INFO [2026-06-16 04:24:16] Picking kumquats for row: 3090
+    #> INFO [2026-06-19 02:26:58] Picking kumquats for row: 1
 
 ``` r
 
