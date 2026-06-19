@@ -146,7 +146,7 @@ describe("generate_perturbations", {
 
     result <- generate_perturbations(
       data,
-      poi = 1,
+      poi = data[1, ],
       radius = 0.1,
       step = 0.1,
       predictors = c("x", "y")
@@ -165,7 +165,7 @@ describe("generate_perturbations", {
 
     result <- generate_perturbations(
       data,
-      poi = 1,
+      poi = data[1, ],
       radius = 0.1,
       step = 0.1,
       predictors = c("x", "y", "z")
@@ -182,7 +182,12 @@ describe("generate_perturbations", {
       c = 3
     )
 
-    result <- generate_perturbations(data, poi = 1, radius = 0.1, step = 0.1)
+    result <- generate_perturbations(
+      data,
+      poi = data[1, ],
+      radius = 0.1,
+      step = 0.1
+    )
 
     expect_equal(ncol(result), 3)
   })
@@ -191,15 +196,7 @@ describe("generate_perturbations", {
     data <- data.frame(x = 1, y = 2)
 
     expect_error(
-      generate_perturbations(data, poi = 1, predictors = c("x", "z"))
-    )
-  })
-
-  it("throws error for invalid poi", {
-    data <- data.frame(x = 1, y = 2)
-
-    expect_error(
-      generate_perturbations(data, poi = 10)
+      generate_perturbations(data, poi = data[1, ], predictors = c("x", "z"))
     )
   })
 })

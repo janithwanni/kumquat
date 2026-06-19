@@ -23,9 +23,9 @@ kumquat(
 
 \item{data}{Training data}
 
-\item{pois}{Points of interest (row numbers)}
+\item{pois}{Points of interest (data rows)}
 
-\item{perturbations}{A data.frame of perturbations to be used to fit the local model}
+\item{perturbations}{A list of data.frames of perturbations to be used to fit the local model}
 
 \item{radius}{Perturbation radius (default: 0.1)}
 
@@ -59,7 +59,7 @@ rfmodel_bundled <- bundle::bundle(rfmodel)
 ks <- kumquat(
  rfmodel_bundled,
  d_vertical,
-  1,
+  d_vertical[1,],
   class_names = unique(d_vertical$class)
 )
 \dontshow{\}) # examplesIf}

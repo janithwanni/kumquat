@@ -9,13 +9,13 @@ generate_perturbations(
   poi,
   radius = 0.1,
   step = 0.01,
-  predictors = names(data)
+  predictors = names(poi)
 )
 }
 \arguments{
 \item{data}{Training data frame}
 
-\item{poi}{Row number of point of interest}
+\item{poi}{a single row data.frame containing the point of interest}
 
 \item{radius}{Perturbation radius (default: 0.1)}
 
@@ -40,7 +40,7 @@ data <- data.frame(
 )
 result <- generate_perturbations(
   data,
-  poi = 1,
+  poi = data[1,],
   radius = 0.1,
   step = 0.1,
   predictors = c("x", "y")

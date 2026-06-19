@@ -1,7 +1,7 @@
 #' Generate Perturbations Around a Point of Interest
 #'
 #' @param data Training data frame
-#' @param poi Row number of point of interest
+#' @param poi a single row data.frame containing the point of interest
 #' @param radius Perturbation radius (default: 0.1)
 #' @param step Step size for perturbations (default: 0.01)
 #' @param predictors Character vector of predictor variable names
@@ -18,7 +18,7 @@
 #' )
 #' result <- generate_perturbations(
 #'   data,
-#'   poi = 1,
+#'   poi = data[1,],
 #'   radius = 0.1,
 #'   step = 0.1,
 #'   predictors = c("x", "y")
@@ -29,28 +29,22 @@ generate_perturbations <- function(
   poi,
   radius = 0.1,
   step = 0.01,
-  predictors = names(data)
+  predictors = names(poi)
 ) {
   if (!is.data.frame(data)) {
     stop("data must be a data frame")
-  }
-
-  if (length(poi) != 1 || poi < 1 || poi > nrow(data)) {
-    stop("poi must be a valid row index")
   }
 
   if (!all(predictors %in% names(data))) {
     stop("All predictors must exist in data")
   }
 
-  local_obs <- data[poi, , drop = FALSE]
-
   perturb_params <- lapply(
     predictors,
     function(var) {
       seq(
-        local_obs[[var]] - radius,
-        local_obs[[var]] + radius,
+        poi[[var]] - radius,
+        poi[[var]] + radius,
         by = step
       )
     }
@@ -151,8 +145,8 @@ fit_local_model <- function(
 #'
 #' @param model_bundle A trained model held in a bundle::bundle()
 #' @param data Training data
-#' @param pois Points of interest (row numbers)
-#' @param perturbations A data.frame of perturbations to be used to fit the local model
+#' @param pois Points of interest (data rows)
+#' @param perturbations A list of data.frames of perturbations to be used to fit the local model
 #' @param radius Perturbation radius (default: 0.1)
 #' @param step Perturbation step size (default: 0.01)
 #' @param predictor_vars Character vector of predictor variable names
@@ -173,7 +167,7 @@ fit_local_model <- function(
 #' ks <- kumquat(
 #'  rfmodel_bundled,
 #'  d_vertical,
-#'   1,
+#'   d_vertical[1,],
 #'   class_names = unique(d_vertical$class)
 #' )
 #'
@@ -191,9 +185,9 @@ kumquat <- function(
   class_names = c("A", "B"),
   predict_func = stats::predict
 ) {
-  lapply(seq_along(pois), \(i) {
-    p <- pois[i]
-    logger::log_info("Picking kumquats for row: {p}")
+  lapply(seq_len(nrow(pois)), \(i) {
+    p_row <- pois[i, ]
+    logger::log_info("Picking kumquats for row: {i}")
     if (!is.null(perturbations)) {
       if (length(perturbations) != length(pois)) {
         stop("Need perturbations for each point of interest")
@@ -203,7 +197,7 @@ kumquat <- function(
       # Generate perturbations
       pertubs <- generate_perturbations(
         data,
-        p,
+        p_row,
         radius,
         step,
         predictors = predictor_vars
@@ -231,7 +225,7 @@ kumquat <- function(
     result <- list(
       perturbations = pertubs,
       local_model = local_model,
-      point_of_interest = p,
+      point_of_interest = p_row,
       train_data = data
     )
 

@@ -32,7 +32,7 @@
 #' ks <- kumquat(
 #'  rfmodel_bundled,
 #'  d_vertical,
-#'   1,
+#'   d_vertical[1,],
 #'   class_names = unique(d_vertical$class)
 #' )
 #' plot_obj <- plot_interest(ks)
@@ -54,7 +54,7 @@ plot_interest <- function(kquat) {
         alpha = 0.1
       ) +
       ggplot2::geom_point(
-        data = dplyr::slice(k$train_data, k$poi),
+        data = k$poi,
         mapping = aes(x = .data$x, y = .data$y),
         color = "black",
         shape = 19,

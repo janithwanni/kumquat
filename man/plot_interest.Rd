@@ -37,7 +37,7 @@ rfmodel_bundled <- bundle::bundle(rfmodel)
 ks <- kumquat(
  rfmodel_bundled,
  d_vertical,
-  1,
+  d_vertical[1,],
   class_names = unique(d_vertical$class)
 )
 plot_obj <- plot_interest(ks)

@@ -21,7 +21,7 @@
 #' ks <- kumquat(
 #'  rfmodel_bundled,
 #'  d_vertical,
-#'   1,
+#'   d_vertical[1,],
 #'   class_names = unique(d_vertical$class)
 #' )
 #' imps <- pinch_importance(ks)

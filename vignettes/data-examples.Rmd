@@ -58,7 +58,6 @@ data("d_vertical")
 
 d_vert_plot <- ggplot(d_vertical, aes(x = x, y = y, colour = class)) +
   geom_point() +
-  # scale_colour_discrete_divergingx(palette = "Zissou 1") +
   scale_color_brewer(palette = "Dark2") +
   theme_minimal() +
   theme(aspect.ratio = 1) +
@@ -72,7 +71,6 @@ data(d_oblique)
 
 d_obl_plot <- ggplot(data=d_oblique, aes(x = x, y = y, colour = class)) +
   geom_point() +
-  # scale_colour_discrete_divergingx(palette = "Zissou 1") +
   scale_color_brewer(palette = "Dark2") +
   theme_minimal() +
   theme(aspect.ratio = 1) +
@@ -86,7 +84,6 @@ data("d_multi")
 
 d_multi_plot <- ggplot(d_multi, aes(x = x, y = y, colour = class)) +
   geom_point() +
-  # scale_colour_discrete_divergingx(palette = "Zissou 1") +
   scale_color_brewer(palette = "Dark2") +
   theme_minimal() +
   theme(aspect.ratio = 1) +
@@ -100,7 +97,6 @@ data("d_multitwo")
 
 d_multitwo_plot <- ggplot(d_multitwo, aes(x = x, y = y, colour = class)) +
   geom_point() +
-  # scale_colour_discrete_divergingx(palette = "Zissou 1") +
   scale_color_brewer(palette = "Dark2") +
   theme_minimal() +
   theme(aspect.ratio = 1) +
@@ -135,10 +131,11 @@ pt <- tibble(x=0.39, y=0.4)
 obs <- find_closest(pt, d_multitwo)
 
 ks <- kumquat(
-  rf_multitwo_bundle,
-  d_multitwo,
-  obs,
-  class_names = unique(d_multitwo$class)
+  model_bundle = rf_multitwo_bundle,
+  data =d_multitwo,
+  pois = d_multitwo[obs,],
+  class_names = unique(d_multitwo$class),
+  predictor_vars = c("x","y")
 )
 ```
 
