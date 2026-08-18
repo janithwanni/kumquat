@@ -6,7 +6,8 @@
 #' @param step Step size for perturbations (default: 0.01)
 #' @param predictors Character vector of predictor variable names
 #'
-#' @return A data frame of perturbed points. The output contains the following properties:
+#' @return A data frame of perturbed points.
+#' The output contains the following properties:
 #' * Columns are predictors
 #' * Number of rows are going to be dependent on `radius` and `step`
 #'

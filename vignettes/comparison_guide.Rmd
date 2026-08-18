@@ -1,0 +1,58 @@
+---
+title: "comparison_guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{comparison_guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(caret)
+library(lime)
+library(kumquat)
+library(bundle)
+```
+
+```{r limeexp}
+# Split up the data set
+iris_test <- iris[1:5, 1:4]
+iris_train <- iris[-(1:5), 1:4]
+iris_lab <- iris[[5]][-(1:5)]
+
+# Create Random Forest model on iris data
+model <- train(iris_train, iris_lab, method = "rf")
+
+# Create an explainer object
+explainer <- lime(iris_train, model)
+
+# Explain new observation
+explanation <- explain(iris_test, explainer, n_labels = 1, n_features = 2)
+
+# The output is provided in a consistent tabular format and includes the
+# output from the model.
+print(explanation)
+
+# And can be visualised directly
+plot_features(explanation)
+```
+
+
+```{r}
+model_bndl <- bundle(model)
+ks <- kumquat(
+  model_bundle = model_bndl,
+  data = iris_train,
+  pois = iris_test,
+  class_names = unique(iris_lab),
+  predictor_vars = colnames(iris_train)
+)
+pinch_importance(ks)
+```
