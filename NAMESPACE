@@ -2,18 +2,23 @@
 
 export(fit_local_model)
 export(generate_perturbations)
+export(kernel_weights)
 export(kumquat)
 export(pinch_importance)
 export(plot_interest)
 import(dplyr)
 import(glmnet)
 import(tidyr)
-importFrom(dplyr,mutate)
-importFrom(dplyr,slice)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,theme_minimal)
+importFrom(dplyr,
+  mutate,
+  slice
+)
+importFrom(ggplot2,
+  aes,
+  geom_point,
+  ggplot,
+  labs,
+  theme_minimal
+)
 importFrom(glue,glue)
 importFrom(rlang,.data)

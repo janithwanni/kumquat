@@ -9,7 +9,8 @@ fit_local_model(
   predictor_vars,
   nfolds = 50,
   alpha = 1,
-  class_names = c("A", "B")
+  class_names = c("A", "B"),
+  weights = NULL
 )
 }
 \arguments{
@@ -21,10 +22,19 @@ fit_local_model(
 
 \item{alpha}{Elastic net mixing parameter (default: 1 for lasso)}
 
-\item{class_names}{Character vector of class names for binary classification}
+\item{class_names}{Character vector of the two class names used to label
+predictions when \code{pred} is numeric (0/1), in that order. When \code{pred} is a
+factor or character vector, predictions are labelled with its own levels
+and \code{class_names} is ignored.}
+
+\item{weights}{Optional numeric vector of observation weights, one per row of
+\code{perturbations} (e.g. from \code{\link[=kernel_weights]{kernel_weights()}}). If \code{NULL} (default), all
+perturbations are weighted equally.}
 }
 \value{
-A list containing glm_predictions, importances, and the fitted model
+A list containing glm_predictions, importances, weights, and the fitted model.
+The coefficients describe the log-odds of the second class, i.e. the second
+level of \code{pred}.
 }
 \description{
 Fit Local Linear Model and Compute Feature Importance

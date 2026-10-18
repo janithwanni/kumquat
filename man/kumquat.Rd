@@ -15,7 +15,10 @@ kumquat(
   nfolds = 50,
   alpha = 1,
   class_names = c("A", "B"),
-  predict_func = stats::predict
+  predict_func = stats::predict,
+  weighted = FALSE,
+  kernel_width = NULL,
+  dist_fun = "euclidean"
 )
 }
 \arguments{
@@ -37,9 +40,18 @@ kumquat(
 
 \item{alpha}{Elastic net parameter (default: 1)}
 
-\item{class_names}{Character vector of class names}
+\item{class_names}{Class names passed to \code{\link[=fit_local_model]{fit_local_model()}}; only used
+to label numeric (0/1) predictions}
 
 \item{predict_func}{A function that takes in two arguments: model and data and returns a vector of factors}
+
+\item{weighted}{If \code{TRUE}, weight perturbations by their proximity to the
+point of interest using \code{\link[=kernel_weights]{kernel_weights()}} when fitting the local model,
+as in LIME (default: \code{FALSE})}
+
+\item{kernel_width}{Kernel width passed to \code{\link[=kernel_weights]{kernel_weights()}}}
+
+\item{dist_fun}{Distance measure passed to \code{\link[=kernel_weights]{kernel_weights()}}}
 }
 \value{
 A list containing perturbations, predictions, and local model results

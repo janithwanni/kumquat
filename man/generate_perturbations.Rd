@@ -24,7 +24,8 @@ generate_perturbations(
 \item{predictors}{Character vector of predictor variable names}
 }
 \value{
-A data frame of perturbed points. The output contains the following properties:
+A data frame of perturbed points.
+The output contains the following properties:
 \itemize{
 \item Columns are predictors
 \item Number of rows are going to be dependent on \code{radius} and \code{step}
