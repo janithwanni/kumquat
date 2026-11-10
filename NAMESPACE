@@ -18,6 +18,7 @@ importFrom(ggplot2,
   geom_point,
   ggplot,
   labs,
+  scale_colour_manual,
   theme_minimal
 )
 importFrom(glue,glue)

@@ -8,8 +8,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    caret,
     colorspace,
     knitr,
+    lime,
+    nlme,
     patchwork,
     randomForest,
     RColorBrewer,
