@@ -1,6 +1,8 @@
 #' Generate Perturbations Around a Point of Interest
 #'
-#' @param data Training data frame
+#' @param data Training data frame. Only used to check that `predictors`
+#'   exist; the perturbations depend on `poi` alone, so the point of interest
+#'   need not be one of the training observations.
 #' @param poi a single row data.frame containing the point of interest
 #' @param radius Perturbation radius (default: 0.1)
 #' @param step Step size for perturbations (default: 0.01)
@@ -130,7 +132,7 @@ kernel_weights <- function(
 #'
 #' @param perturbations Data frame of perturbations with predictions
 #' @param predictor_vars Character vector of predictor variable names
-#' @param nfolds Number of folds for cross-validation (default: 50)
+#' @param nfolds Number of folds for cross-validation (default: 10)
 #' @param alpha Elastic net mixing parameter (default: 1 for lasso)
 #' @param class_names Character vector of the two class names used to label
 #'   predictions when `pred` is numeric (0/1), in that order. When `pred` is a
@@ -160,7 +162,7 @@ kernel_weights <- function(
 fit_local_model <- function(
   perturbations,
   predictor_vars,
-  nfolds = 50,
+  nfolds = 10,
   alpha = 1,
   class_names = c("A", "B"),
   weights = NULL

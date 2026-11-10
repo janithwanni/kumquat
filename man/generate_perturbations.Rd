@@ -13,7 +13,9 @@ generate_perturbations(
 )
 }
 \arguments{
-\item{data}{Training data frame}
+\item{data}{Training data frame. Only used to check that \code{predictors}
+exist; the perturbations depend on \code{poi} alone, so the point of interest
+need not be one of the training observations.}
 
 \item{poi}{a single row data.frame containing the point of interest}
 

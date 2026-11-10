@@ -7,7 +7,7 @@
 fit_local_model(
   perturbations,
   predictor_vars,
-  nfolds = 50,
+  nfolds = 10,
   alpha = 1,
   class_names = c("A", "B"),
   weights = NULL
@@ -18,7 +18,7 @@ fit_local_model(
 
 \item{predictor_vars}{Character vector of predictor variable names}
 
-\item{nfolds}{Number of folds for cross-validation (default: 50)}
+\item{nfolds}{Number of folds for cross-validation (default: 10)}
 
 \item{alpha}{Elastic net mixing parameter (default: 1 for lasso)}
 

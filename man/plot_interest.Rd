@@ -4,20 +4,27 @@
 \alias{plot_interest}
 \title{Plot point of interest with perturbations and predictions}
 \usage{
-plot_interest(kquat)
+plot_interest(kquat, colours = c(A = "#1B9E77", B = "#D95F02"))
 }
 \arguments{
-\item{kquat}{A list-like object containing at least:
+\item{kquat}{The output of \code{\link[=kumquat]{kumquat()}}: a list with one element per point
+of interest, each containing at least:
 \itemize{
-\item \code{local_model$importances} numeric vector
-\item \code{local_model$glm_predictions} numeric vector
+\item \code{local_model$glm_predictions} predicted classes of the local
+surrogate for each perturbation
 \item \code{perturbations} data.frame with columns \code{x} and \code{y}
-\item \code{train_data} data.frame with columns \code{x}, \code{y}, and \code{class}
-\item \code{poi} integer or index of the point of interest
+\item \code{train_data} data.frame with columns \code{x}, \code{y} and
+\code{pred}
+\item \code{point_of_interest} single-row data.frame with columns
+\code{x} and \code{y}
 }}
+
+\item{colours}{Named character vector of colours, one per class. Defaults
+to the palette used for the benchmark datasets. Set to \code{NULL} to use
+the default \code{ggplot2} palette.}
 }
 \value{
-A \code{ggplot} object
+A list of \code{ggplot} objects, one per point of interest
 }
 \description{
 This function generates a ggplot visualizing the perturbations of a
