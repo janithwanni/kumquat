@@ -36,6 +36,6 @@ ks <- kumquat(
   d_vertical[1,],
   class_names = unique(d_vertical$class)
 )
-#> INFO [2026-06-19 02:26:52] Picking kumquats for row: 1
+#> INFO [2026-11-10 22:25:05] Picking kumquats for row: 1
 imps <- pinch_importance(ks)
 ```

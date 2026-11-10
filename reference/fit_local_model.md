@@ -8,9 +8,10 @@ Fit Local Linear Model and Compute Feature Importance
 fit_local_model(
   perturbations,
   predictor_vars,
-  nfolds = 50,
+  nfolds = 10,
   alpha = 1,
-  class_names = c("A", "B")
+  class_names = c("A", "B"),
+  weights = NULL
 )
 ```
 
@@ -26,7 +27,7 @@ fit_local_model(
 
 - nfolds:
 
-  Number of folds for cross-validation (default: 50)
+  Number of folds for cross-validation (default: 10)
 
 - alpha:
 
@@ -34,11 +35,23 @@ fit_local_model(
 
 - class_names:
 
-  Character vector of class names for binary classification
+  Character vector of the two class names used to label predictions when
+  `pred` is numeric (0/1), in that order. When `pred` is a factor or
+  character vector, predictions are labelled with its own levels and
+  `class_names` is ignored.
+
+- weights:
+
+  Optional numeric vector of observation weights, one per row of
+  `perturbations` (e.g. from
+  [`kernel_weights()`](https://janithwanni.github.io/kumquat/reference/kernel_weights.md)).
+  If `NULL` (default), all perturbations are weighted equally.
 
 ## Value
 
-A list containing glm_predictions, importances, and the fitted model
+A list containing glm_predictions, importances, weights, and the fitted
+model. The coefficients describe the log-odds of the second class, i.e.
+the second level of `pred`.
 
 ## Examples
 

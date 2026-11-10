@@ -4,22 +4,22 @@
 
 library(kumquat)
 options(repos = c(CRAN = "https://cloud.r-project.org"))
-if(!requireNamespace("tidyverse")) {
+if (!requireNamespace("tidyverse")) {
   install.packages("tidyverse")
 }
 #> Loading required namespace: tidyverse
-if(!requireNamespace("RColorBrewer")) {
+if (!requireNamespace("RColorBrewer")) {
   install.packages("RColorBrewer")
 }
-if(!requireNamespace("colorspace")) {
+if (!requireNamespace("colorspace")) {
   install.packages("colorspace")
 }
 #> Loading required namespace: colorspace
-if(!requireNamespace("patchwork")) {
+if (!requireNamespace("patchwork")) {
   install.packages("patchwork")
 }
 #> Loading required namespace: patchwork
-if(!requireNamespace("randomForest")) {
+if (!requireNamespace("randomForest")) {
   install.packages("randomForest")
 }
 #> Loading required namespace: randomForest
@@ -69,7 +69,6 @@ along with their decision boundary.
 
 ``` r
 
-
 (d_vert_plot + d_obl_plot) / (d_multi_plot + d_multitwo_plot)
 ```
 
@@ -79,7 +78,7 @@ along with their decision boundary.
 
 ### Models
 
-    #> INFO [2026-06-19 02:26:58] Picking kumquats for row: 1
+    #> INFO [2026-11-10 22:25:20] Picking kumquats for row: 1
 
 ``` r
 

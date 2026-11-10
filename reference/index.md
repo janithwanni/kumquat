@@ -14,6 +14,8 @@
   : Fit Local Linear Model and Compute Feature Importance
 - [`generate_perturbations()`](https://janithwanni.github.io/kumquat/reference/generate_perturbations.md)
   : Generate Perturbations Around a Point of Interest
+- [`kernel_weights()`](https://janithwanni.github.io/kumquat/reference/kernel_weights.md)
+  : Compute LIME-style Kernel Weights for Perturbations
 - [`kumquat()`](https://janithwanni.github.io/kumquat/reference/kumquat.md)
   : Complete Local Interpretation Pipeline
 - [`pinch_importance()`](https://janithwanni.github.io/kumquat/reference/pinch_importance.md)

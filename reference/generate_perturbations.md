@@ -18,7 +18,9 @@ generate_perturbations(
 
 - data:
 
-  Training data frame
+  Training data frame. Only used to check that `predictors` exist; the
+  perturbations depend on `poi` alone, so the point of interest need not
+  be one of the training observations.
 
 - poi:
 
