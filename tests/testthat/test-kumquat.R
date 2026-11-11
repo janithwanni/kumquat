@@ -389,3 +389,90 @@ describe("kumquat with supplied perturbations", {
     )
   })
 })
+
+describe("kumquat with replaced steps", {
+  skip_if_not_installed("randomForest")
+  skip_if_not_installed("bundle")
+  logger::log_threshold(logger::WARN, namespace = "kumquat")
+
+  set.seed(1)
+  rf <- randomForest::randomForest(class ~ x + y, data = d_vertical, ntree = 50)
+  rf_bundle <- bundle::bundle(rf)
+  poi <- d_vertical[799, ]
+  classes <- levels(d_vertical$class)
+
+  it("uses a custom perturbation function that takes only some arguments", {
+    random_box <- function(poi, radius, predictor_vars) {
+      as.data.frame(lapply(
+        stats::setNames(predictor_vars, predictor_vars),
+        \(v) stats::runif(200, poi[[v]] - radius, poi[[v]] + radius)
+      ))
+    }
+    ks <- kumquat(rf_bundle, d_vertical, poi,
+      class_names = classes, nfolds = 5, perturb_fun = random_box
+    )
+    expect_equal(nrow(ks[[1]]$perturbations), 200)
+    expect_true("pred" %in% names(ks[[1]]$perturbations))
+  })
+
+  it("uses a custom weight function even when weighted = FALSE", {
+    seen <- NULL
+    my_weights <- function(perturbations, ...) {
+      seen <<- names(list(...))
+      rep(2, nrow(perturbations))
+    }
+    ks <- kumquat(rf_bundle, d_vertical, poi,
+      class_names = classes, nfolds = 5, weight_fun = my_weights
+    )
+    expect_equal(unique(ks[[1]]$local_model$weights), 2)
+    expect_setequal(seen, c("poi", "predictor_vars", "kernel_width", "dist_fun"))
+  })
+
+  it("defaults to kernel_weights when weighted = TRUE", {
+    ks <- kumquat(rf_bundle, d_vertical, poi,
+      class_names = classes, nfolds = 5, weighted = TRUE
+    )
+    expected <- kernel_weights(ks[[1]]$perturbations, poi, c("x", "y"))
+    expect_equal(ks[[1]]$local_model$weights, expected)
+  })
+
+  it("uses a custom surrogate function", {
+    glm_surrogate <- function(perturbations, predictor_vars, weights) {
+      fit <- stats::glm(
+        stats::reformulate(predictor_vars, "pred"),
+        data = perturbations, family = stats::binomial()
+      )
+      list(
+        glm_predictions = ifelse(stats::fitted(fit) < 0.5, "A", "B"),
+        importances = stats::coef(fit)[predictor_vars],
+        model = fit
+      )
+    }
+    ks <- suppressWarnings(kumquat(rf_bundle, d_vertical, poi,
+      class_names = classes, surrogate_fun = glm_surrogate
+    ))
+    expect_s3_class(ks[[1]]$local_model$model, "glm")
+    expect_named(pinch_importance(ks), c("x", "y"))
+  })
+
+  it("validates the output of replaced steps", {
+    expect_error(
+      kumquat(rf_bundle, d_vertical, poi,
+        perturb_fun = function(poi) data.frame(z = 1)
+      ),
+      "missing predictor columns: x, y"
+    )
+    expect_error(
+      kumquat(rf_bundle, d_vertical, poi,
+        weight_fun = function(perturbations) 1
+      ),
+      "one numeric weight per perturbation"
+    )
+    expect_error(
+      kumquat(rf_bundle, d_vertical, poi,
+        surrogate_fun = function(perturbations) "nope"
+      ),
+      "must return a list"
+    )
+  })
+})

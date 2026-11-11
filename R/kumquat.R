@@ -244,10 +244,36 @@ fit_local_model <- function(
 
 #' Complete Local Interpretation Pipeline
 #'
+#' Runs the LIME pipeline for each point of interest: generate perturbations,
+#' predict them with the black-box model, weight them, and fit a local
+#' surrogate. Each step is carried out by a function that can be replaced
+#' through `perturb_fun`, `weight_fun` and `surrogate_fun`.
+#'
+#' @section Replacing steps:
+#' Each step function is called with named arguments. A replacement only needs
+#' to accept the arguments it uses: arguments that are not in its formals are
+#' dropped, unless it has a `...` argument, in which case all are passed.
+#'
+#' * `perturb_fun` is called with `data`, `poi` (a single-row data frame),
+#'   `radius`, `step`, `predictors` and `predictor_vars` (both are the
+#'   predictor names). It must return a data frame containing the
+#'   `predictor_vars` columns, one row per perturbation.
+#' * `weight_fun` is called with `perturbations` (including the black-box
+#'   predictions in column `pred`), `poi`, `predictor_vars`, `kernel_width` and
+#'   `dist_fun`. It must return a numeric vector with one non-negative weight
+#'   per perturbation.
+#' * `surrogate_fun` is called with `perturbations` (including `pred`),
+#'   `predictor_vars`, `nfolds`, `alpha`, `class_names` and `weights` (`NULL`
+#'   when the perturbations are not weighted). It must return a list. To work
+#'   with [plot_interest()] and [pinch_importance()], it should contain
+#'   `glm_predictions` (one predicted class per perturbation) and
+#'   `importances` (a named numeric vector).
+#'
 #' @param model_bundle A trained model held in a bundle::bundle()
 #' @param data Training data
 #' @param pois Points of interest (data rows)
-#' @param perturbations A list of data.frames of perturbations to be used to fit the local model
+#' @param perturbations A list of data.frames of perturbations, one per point
+#'   of interest, to be used instead of calling `perturb_fun`
 #' @param radius Perturbation radius (default: 0.1)
 #' @param step Perturbation step size (default: 0.01)
 #' @param predictor_vars Character vector of predictor variable names
@@ -257,12 +283,21 @@ fit_local_model <- function(
 #'   to label numeric (0/1) predictions
 #' @param predict_func A function that takes in two arguments: model and data and returns a vector of factors
 #' @param weighted If `TRUE`, weight perturbations by their proximity to the
-#'   point of interest using [kernel_weights()] when fitting the local model,
-#'   as in LIME (default: `FALSE`)
-#' @param kernel_width Kernel width passed to [kernel_weights()]
-#' @param dist_fun Distance measure passed to [kernel_weights()]
+#'   point of interest using `weight_fun` when fitting the local model,
+#'   as in LIME (default: `FALSE`). Ignored when `weight_fun` is supplied.
+#' @param kernel_width Kernel width passed to `weight_fun`
+#' @param dist_fun Distance measure passed to `weight_fun`
+#' @param perturb_fun Function that generates the perturbations around a point
+#'   of interest (default: [generate_perturbations()]).
+#' @param weight_fun Function that weights the perturbations. If `NULL`
+#'   (default), [kernel_weights()] is used when `weighted = TRUE` and all
+#'   perturbations are weighted equally otherwise. Supplying a function always
+#'   weights the perturbations.
+#' @param surrogate_fun Function that fits the local surrogate model
+#'   (default: [fit_local_model()]).
 #'
-#' @return A list containing perturbations, predictions, and local model results
+#' @return A list with one element per point of interest, each containing
+#'   `perturbations`, `local_model`, `point_of_interest` and `train_data`.
 #' @examplesIf rlang::is_installed(c("randomForest", "bundle"))
 #' data(d_vertical)
 #' rfmodel <- randomForest::randomForest(
@@ -276,6 +311,22 @@ fit_local_model <- function(
 #'  d_vertical,
 #'   d_vertical[1,],
 #'   class_names = unique(d_vertical$class)
+#' )
+#'
+#' # Replace the perturbation step with uniform random sampling in the box
+#' random_box <- function(poi, radius, predictor_vars) {
+#'   n <- 500
+#'   as.data.frame(lapply(
+#'     stats::setNames(predictor_vars, predictor_vars),
+#'     \(v) stats::runif(n, poi[[v]] - radius, poi[[v]] + radius)
+#'   ))
+#' }
+#' ks_random <- kumquat(
+#'   rfmodel_bundled,
+#'   d_vertical,
+#'   d_vertical[799, ],
+#'   class_names = levels(d_vertical$class),
+#'   perturb_fun = random_box
 #' )
 #'
 #' @export
@@ -293,65 +344,118 @@ kumquat <- function(
   predict_func = stats::predict,
   weighted = FALSE,
   kernel_width = NULL,
-  dist_fun = "euclidean"
+  dist_fun = "euclidean",
+  perturb_fun = generate_perturbations,
+  weight_fun = NULL,
+  surrogate_fun = fit_local_model
 ) {
+  perturb_fun <- match.fun(perturb_fun)
+  surrogate_fun <- match.fun(surrogate_fun)
+  if (is.null(weight_fun) && isTRUE(weighted)) {
+    weight_fun <- kernel_weights
+  }
+  if (!is.null(weight_fun)) {
+    weight_fun <- match.fun(weight_fun)
+  }
+
+  if (!is.null(perturbations) && length(perturbations) != nrow(pois)) {
+    stop("Need perturbations for each point of interest")
+  }
+
+  # Unbundle model once
+  model <- bundle::unbundle(model_bundle)
+  train_data <- data |>
+    dplyr::mutate(pred = predict_func(model, data))
+
   lapply(seq_len(nrow(pois)), \(i) {
     p_row <- pois[i, ]
     logger::log_info("Picking kumquats for row: {i}")
+
+    # Generate perturbations
     if (!is.null(perturbations)) {
-      if (length(perturbations) != nrow(pois)) {
-        stop("Need perturbations for each point of interest")
-      }
       pertubs <- perturbations[[i]]
     } else {
-      # Generate perturbations
-      pertubs <- generate_perturbations(
-        data,
-        p_row,
-        radius,
-        step,
-        predictors = predictor_vars
-      )
+      pertubs <- call_step(perturb_fun, list(
+        data = data,
+        poi = p_row,
+        radius = radius,
+        step = step,
+        predictors = predictor_vars,
+        predictor_vars = predictor_vars
+      ))
     }
-
-    # Unbundle model
-    model <- bundle::unbundle(model_bundle)
+    check_perturbations(pertubs, predictor_vars)
 
     # Get predictions
     pertubs <- pertubs |>
       dplyr::mutate(pred = predict_func(model, pertubs))
-    data <- data |>
-      dplyr::mutate(pred = predict_func(model, data))
 
-    # Weight perturbations by proximity to the point of interest
+    # Weight perturbations
     weights <- NULL
-    if (weighted) {
-      weights <- kernel_weights(
-        pertubs,
-        p_row,
-        predictor_vars,
-        kernel_width,
-        dist_fun
-      )
+    if (!is.null(weight_fun)) {
+      weights <- call_step(weight_fun, list(
+        perturbations = pertubs,
+        poi = p_row,
+        predictor_vars = predictor_vars,
+        kernel_width = kernel_width,
+        dist_fun = dist_fun
+      ))
+      check_weights(weights, nrow(pertubs))
     }
 
     # Fit local model
-    local_model <- fit_local_model(
-      pertubs,
-      predictor_vars,
-      nfolds,
-      alpha,
-      class_names,
-      weights
-    )
+    local_model <- call_step(surrogate_fun, list(
+      perturbations = pertubs,
+      predictor_vars = predictor_vars,
+      nfolds = nfolds,
+      alpha = alpha,
+      class_names = class_names,
+      weights = weights
+    ))
+    if (!is.list(local_model)) {
+      stop("surrogate_fun must return a list")
+    }
 
-    result <- list(
+    list(
       perturbations = pertubs,
       local_model = local_model,
       point_of_interest = p_row,
-      train_data = data
+      train_data = train_data
     )
-
-    return(result)
   })
+}
+
+
+# Call a pipeline step with named arguments, dropping those the function does
+# not accept unless it has `...`.
+call_step <- function(fun, args) {
+  fmls <- names(formals(fun))
+  if (!is.null(fmls) && !"..." %in% fmls) {
+    args <- args[names(args) %in% fmls]
+  }
+  do.call(fun, args)
+}
+
+check_perturbations <- function(perturbations, predictor_vars) {
+  if (!is.data.frame(perturbations)) {
+    stop("Perturbations must be a data frame")
+  }
+  missing <- setdiff(predictor_vars, names(perturbations))
+  if (length(missing) > 0) {
+    stop(
+      "Perturbations are missing predictor columns: ",
+      paste(missing, collapse = ", ")
+    )
+  }
+  invisible(perturbations)
+}
+
+check_weights <- function(weights, n) {
+  if (!is.numeric(weights) || length(weights) != n) {
+    stop("weight_fun must return one numeric weight per perturbation")
+  }
+  if (anyNA(weights) || any(weights < 0)) {
+    stop("weight_fun must return non-negative, non-missing weights")
+  }
+  invisible(weights)
 }

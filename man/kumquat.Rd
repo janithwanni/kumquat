@@ -18,7 +18,10 @@ kumquat(
   predict_func = stats::predict,
   weighted = FALSE,
   kernel_width = NULL,
-  dist_fun = "euclidean"
+  dist_fun = "euclidean",
+  perturb_fun = generate_perturbations,
+  weight_fun = NULL,
+  surrogate_fun = fit_local_model
 )
 }
 \arguments{
@@ -28,7 +31,8 @@ kumquat(
 
 \item{pois}{Points of interest (data rows)}
 
-\item{perturbations}{A list of data.frames of perturbations to be used to fit the local model}
+\item{perturbations}{A list of data.frames of perturbations, one per point
+of interest, to be used instead of calling \code{perturb_fun}}
 
 \item{radius}{Perturbation radius (default: 0.1)}
 
@@ -46,19 +50,57 @@ to label numeric (0/1) predictions}
 \item{predict_func}{A function that takes in two arguments: model and data and returns a vector of factors}
 
 \item{weighted}{If \code{TRUE}, weight perturbations by their proximity to the
-point of interest using \code{\link[=kernel_weights]{kernel_weights()}} when fitting the local model,
-as in LIME (default: \code{FALSE})}
+point of interest using \code{weight_fun} when fitting the local model,
+as in LIME (default: \code{FALSE}). Ignored when \code{weight_fun} is supplied.}
 
-\item{kernel_width}{Kernel width passed to \code{\link[=kernel_weights]{kernel_weights()}}}
+\item{kernel_width}{Kernel width passed to \code{weight_fun}}
 
-\item{dist_fun}{Distance measure passed to \code{\link[=kernel_weights]{kernel_weights()}}}
+\item{dist_fun}{Distance measure passed to \code{weight_fun}}
+
+\item{perturb_fun}{Function that generates the perturbations around a point
+of interest (default: \code{\link[=generate_perturbations]{generate_perturbations()}}).}
+
+\item{weight_fun}{Function that weights the perturbations. If \code{NULL}
+(default), \code{\link[=kernel_weights]{kernel_weights()}} is used when \code{weighted = TRUE} and all
+perturbations are weighted equally otherwise. Supplying a function always
+weights the perturbations.}
+
+\item{surrogate_fun}{Function that fits the local surrogate model
+(default: \code{\link[=fit_local_model]{fit_local_model()}}).}
 }
 \value{
-A list containing perturbations, predictions, and local model results
+A list with one element per point of interest, each containing
+\code{perturbations}, \code{local_model}, \code{point_of_interest} and \code{train_data}.
 }
 \description{
-Complete Local Interpretation Pipeline
+Runs the LIME pipeline for each point of interest: generate perturbations,
+predict them with the black-box model, weight them, and fit a local
+surrogate. Each step is carried out by a function that can be replaced
+through \code{perturb_fun}, \code{weight_fun} and \code{surrogate_fun}.
 }
+\section{Replacing steps}{
+
+Each step function is called with named arguments. A replacement only needs
+to accept the arguments it uses: arguments that are not in its formals are
+dropped, unless it has a \code{...} argument, in which case all are passed.
+\itemize{
+\item \code{perturb_fun} is called with \code{data}, \code{poi} (a single-row data frame),
+\code{radius}, \code{step}, \code{predictors} and \code{predictor_vars} (both are the
+predictor names). It must return a data frame containing the
+\code{predictor_vars} columns, one row per perturbation.
+\item \code{weight_fun} is called with \code{perturbations} (including the black-box
+predictions in column \code{pred}), \code{poi}, \code{predictor_vars}, \code{kernel_width} and
+\code{dist_fun}. It must return a numeric vector with one non-negative weight
+per perturbation.
+\item \code{surrogate_fun} is called with \code{perturbations} (including \code{pred}),
+\code{predictor_vars}, \code{nfolds}, \code{alpha}, \code{class_names} and \code{weights} (\code{NULL}
+when the perturbations are not weighted). It must return a list. To work
+with \code{\link[=plot_interest]{plot_interest()}} and \code{\link[=pinch_importance]{pinch_importance()}}, it should contain
+\code{glm_predictions} (one predicted class per perturbation) and
+\code{importances} (a named numeric vector).
+}
+}
+
 \examples{
 \dontshow{if (rlang::is_installed(c("randomForest", "bundle"))) withAutoprint(\{ # examplesIf}
 data(d_vertical)
@@ -73,6 +115,22 @@ ks <- kumquat(
  d_vertical,
   d_vertical[1,],
   class_names = unique(d_vertical$class)
+)
+
+# Replace the perturbation step with uniform random sampling in the box
+random_box <- function(poi, radius, predictor_vars) {
+  n <- 500
+  as.data.frame(lapply(
+    stats::setNames(predictor_vars, predictor_vars),
+    \(v) stats::runif(n, poi[[v]] - radius, poi[[v]] + radius)
+  ))
+}
+ks_random <- kumquat(
+  rfmodel_bundled,
+  d_vertical,
+  d_vertical[799, ],
+  class_names = levels(d_vertical$class),
+  perturb_fun = random_box
 )
 \dontshow{\}) # examplesIf}
 }
