@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">kumquat</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,8 +38,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="kumquat-development-version">kumquat (development version)<a class="anchor" aria-label="anchor" href="#kumquat-development-version"></a></h2>
-<ul><li>Added <code><a href="../reference/kernel_weights.html">kernel_weights()</a></code> to weight perturbations by their distance from the point of interest using LIME’s exponential kernel.</li>
+<h2 class="pkg-version" data-toc-text="1.2.0" id="kumquat-120">kumquat 1.2.0<a class="anchor" aria-label="anchor" href="#kumquat-120"></a></h2>
+<ul><li>
+<code><a href="../reference/kumquat.html">kumquat()</a></code> gains <code>perturb_fun</code>, <code>weight_fun</code> and <code>surrogate_fun</code> arguments, so each step of the pipeline can be replaced by a user-written function. They default to <code><a href="../reference/generate_perturbations.html">generate_perturbations()</a></code>, <code><a href="../reference/kernel_weights.html">kernel_weights()</a></code> (when <code>weighted = TRUE</code>) and <code><a href="../reference/fit_local_model.html">fit_local_model()</a></code>. Each step is called with named arguments, and a replacement only needs to accept the ones it uses. The output of each step is checked, so a replacement that returns the wrong shape gives an informative error.</li>
+<li>
+<code><a href="../reference/kumquat.html">kumquat()</a></code> now unbundles the model and predicts on the training data once, rather than once per point of interest.</li>
+<li>
+<code><a href="../reference/plot_interest.html">plot_interest()</a></code> gains a <code>colours</code> argument. It defaults to the palette used for the benchmark datasets; <code>colours = NULL</code> restores the <code>ggplot2</code> default.</li>
+<li>
+<code><a href="../reference/plot_interest.html">plot_interest()</a></code> now looks up the point of interest with its full name, <code>point_of_interest</code>, instead of relying on partial matching of <code>$poi</code>.</li>
+<li>Added <code><a href="../reference/kernel_weights.html">kernel_weights()</a></code> to weight perturbations by their distance from the point of interest using LIME’s exponential kernel.</li>
 <li>
 <code><a href="../reference/fit_local_model.html">fit_local_model()</a></code> now labels surrogate predictions with the levels of the <code>pred</code> column when it is a factor or character vector. Previously the labels followed the order of <code>class_names</code>, so passing e.g. <code>unique(data$class)</code> could swap them. <code>class_names</code> is now only used for numeric (0/1) predictions.</li>
 <li>
@@ -47,15 +55,12 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="kumquat-110">kumquat 1.1.0<a class="anchor" aria-label="anchor" href="#kumquat-110"></a></h2><p class="text-muted">CRAN release: 2026-06-22</p>
-</div>
+<ul><li>Added new test datasets and unit tests.</li>
+<li>Updated internal lime calculation methods.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="kumquat-100">kumquat 1.0.0<a class="anchor" aria-label="anchor" href="#kumquat-100"></a></h2>
 <ul><li>Initial CRAN submission.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0" id="kumquat-110-1">kumquat 1.1.0<a class="anchor" aria-label="anchor" href="#kumquat-110-1"></a></h2><p class="text-muted">CRAN release: 2026-06-22</p>
-<ul><li>Added new test datasets and unit tests.</li>
-<li>Updated internal lime calculation methods.</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

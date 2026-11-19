@@ -55,6 +55,6 @@ ks <- kumquat(
   d_vertical[1,],
   class_names = unique(d_vertical$class)
 )
-#> INFO [2026-11-10 22:25:06] Picking kumquats for row: 1
+#> INFO [2026-11-19 03:36:51] Picking kumquats for row: 1
 plot_obj <- plot_interest(ks)
 ```
